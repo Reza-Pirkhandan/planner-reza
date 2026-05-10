@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>پلنر رضا — می ۲۰۲۶</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #111118;
+  --surface2: #1a1a24;
+  --surface3: #222230;
+  --border: #2a2a3a;
+  --accent: #7c6fff;
+  --accent2: #ff6b9d;
+  --accent3: #00d4aa;
+  --gold: #ffd166;
+  --text: #e8e8f0;
+  --text-dim: #8888aa;
+  --text-muted: #44445a;
+  --done-bg: #1a2a1a;
+  --done-border: #2d5a2d;
+  --done-color: #4ade80;
+  --radius: 12px;
+  --font: 'Vazirmatn', sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  direction: rtl;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Background grid */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(124,111,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,111,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.app { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 24px 16px 80px; }
+
+/* ── Header ── */
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 32px 24px;
+  background: linear-gradient(135deg, #111118, #1a1a28);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: '';
+  position: absolute;
+  top: -60px; left: 50%; transform: translateX(-50%);
+  width: 300px; height: 200px;
+  background: radial-gradient(ellipse, rgba(124,111,255,0.15), transparent 70%);
+  pointer-events: none;
+}
+.header-tag {
+  display: inline-block;
+  background: rgba(124,111,255,0.15);
+  border: 1px solid rgba(124,111,255,0.3);
+  color: var(--accent);
+  font-size: 0.75em;
+  padding: 4px 14px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+}
+.header h1 {
+  font-size: 2em;
+  font-weight: 900;
+  background: linear-gradient(135deg, #fff 0%, var(--accent) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+.header p { color: var(--text-dim); font-size: 0.9em; }
+
+/* ── Stats Row ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+.stat-card:hover { border-color: var(--accent); }
+.stat-value {
+  font-size: 1.8em;
+  font-weight: 900;
+  margin-bottom: 4px;
+}
+.stat-label { font-size: 0.75em; color: var(--text-dim); }
+.c-purple { color: var(--accent); }
+.c-pink   { color: var(--accent2); }
+.c-green  { color: var(--accent3); }
+.c-gold   { color: var(--gold); }
+
+/* ── Section Title ── */
+.section-title {
+  font-size: 0.75em;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin: 28px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Habit Grid ── */
+.habit-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.habit-block-header {
+  display: grid;
+  grid-template-columns: 200px 1fr auto;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.habit-block-title { font-size: 0.8em; color: var(--text-dim); font-weight: 700; }
+.days-labels {
+  display: grid;
+  gap: 3px;
+}
+.day-label {
+  font-size: 0.65em;
+  color: var(--text-muted);
+  text-align: center;
+  font-weight: 700;
+}
+.habit-block-pct {
+  font-size: 0.8em;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 44px;
+  text-align: center;
+}
+
+/* habit row */
+.habit-row {
+  display: grid;
+  grid-template-columns: 200px 1fr auto;
+  align-items: center;
+  padding: 8px 16px;
+  border-bottom: 1px solid rgba(42,42,58,0.5);
+  gap: 12px;
+  transition: background 0.15s;
+}
+.habit-row:last-child { border-bottom: none; }
+.habit-row:hover { background: rgba(124,111,255,0.04); }
+
+.habit-label {
+  font-size: 0.85em;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.days-grid {
+  display: grid;
+  gap: 3px;
+}
+.day-cell {
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75em;
+  color: var(--text-muted);
+  transition: all 0.15s;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+.day-cell:hover { border-color: var(--accent); background: rgba(124,111,255,0.08); }
+.day-cell:active { transform: scale(0.92); }
+.day-cell.done {
+  background: var(--done-bg);
+  border-color: var(--done-border);
+  color: var(--done-color);
+}
+.day-cell.today {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px rgba(255,209,102,0.3);
+}
+.day-cell.future { opacity: 0.35; cursor: default; pointer-events: none; }
+
+.habit-pct {
+  font-size: 0.8em;
+  font-weight: 700;
+  min-width: 44px;
+  text-align: center;
+  color: var(--text-dim);
+}
+
+/* summary row */
+.summary-row {
+  display: grid;
+  grid-template-columns: 200px 1fr auto;
+  align-items: center;
+  padding: 8px 16px;
+  background: var(--surface2);
+  border-top: 1px solid var(--border);
+  gap: 12px;
+}
+.summary-label { font-size: 0.75em; color: var(--gold); font-weight: 700; }
+.summary-cell {
+  height: 24px;
+  border-radius: 5px;
+  background: var(--surface3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7em;
+  font-weight: 700;
+  color: var(--text-dim);
+}
+.summary-cell.full { background: rgba(74,222,128,0.15); color: var(--done-color); }
+.summary-pct { font-size: 0.8em; font-weight: 900; color: var(--gold); min-width: 44px; text-align: center; }
+
+/* ── Progress Bar ── */
+.prog-bar-wrap { margin: 20px 0; }
+.prog-bar-label { display: flex; justify-content: space-between; font-size: 0.8em; color: var(--text-dim); margin-bottom: 6px; }
+.prog-bar-track { height: 8px; background: var(--surface3); border-radius: 99px; overflow: hidden; }
+.prog-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.5s ease; }
+
+/* ── Chart ── */
+.chart-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.chart-title { font-size: 0.8em; color: var(--text-dim); margin-bottom: 16px; font-weight: 700; }
+.chart-bars { display: flex; align-items: flex-end; gap: 4px; height: 80px; }
+.chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; justify-content: flex-end; }
+.chart-bar {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(180deg, var(--accent), rgba(124,111,255,0.3));
+  min-height: 2px;
+  transition: height 0.4s ease;
+  cursor: default;
+  position: relative;
+}
+.chart-bar:hover::after {
+  content: attr(data-val);
+  position: absolute;
+  top: -22px; left: 50%; transform: translateX(-50%);
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.65em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.chart-bar-label { font-size: 0.6em; color: var(--text-muted); }
+
+/* ── Social Media Rules ── */
+.rules-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.rules-block h3 { font-size: 0.9em; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.rules-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.rule-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+.rule-card h4 { font-size: 0.8em; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.rule-item { font-size: 0.75em; color: var(--text-dim); margin-bottom: 6px; display: flex; align-items: flex-start; gap: 6px; line-height: 1.5; }
+.rule-item::before { content: '—'; color: var(--text-muted); flex-shrink: 0; margin-top: 1px; }
+
+/* ── Week Tabs ── */
+.week-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.week-tab {
+  padding: 8px 18px;
+  border-radius: 99px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 0.8em;
+  font-family: var(--font);
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.week-tab:hover { border-color: var(--accent); color: var(--text); }
+.week-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+/* ── Save Button ── */
+.save-btn {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  border: none;
+  padding: 14px 36px;
+  border-radius: 99px;
+  font-size: 0.95em;
+  font-family: var(--font);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 32px rgba(124,111,255,0.4);
+  z-index: 100;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.save-btn:hover { box-shadow: 0 12px 40px rgba(124,111,255,0.5); transform: translateX(-50%) translateY(-2px); }
+.save-btn:active { transform: translateX(-50%) scale(0.96); }
+
+/* ── Toast ── */
+.toast {
+  position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
+  background: var(--done-color); color: #000;
+  padding: 10px 24px; border-radius: 99px;
+  font-size: 0.85em; font-weight: 700;
+  z-index: 200; opacity: 0; transition: opacity 0.3s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; }
+
+@media (max-width: 600px) {
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .rules-grid { grid-template-columns: 1fr; }
+  .habit-block-header,
+  .habit-row,
+  .summary-row { grid-template-columns: 140px 1fr auto; }
+  .header h1 { font-size: 1.4em; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-tag">می ۲۰۲۶</div>
+    <h1>🎯 پلنر رضا</h1>
+    <p>برنامه ۴ هفته اول — شروع ۱۱ می ۲۰۲۶</p>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-value c-purple" id="stat-done">0</div>
+      <div class="stat-label">تیک خورده</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value c-green" id="stat-pct">0%</div>
+      <div class="stat-label">پیشرفت کل</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value c-pink" id="stat-streak">0</div>
+      <div class="stat-label">روز متوالی</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value c-gold" id="stat-week">هفته ۱</div>
+      <div class="stat-label">هفته فعال</div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="prog-bar-wrap">
+    <div class="prog-bar-label">
+      <span>پیشرفت ۴ هفته</span>
+      <span id="prog-text">0 / 0</span>
+    </div>
+    <div class="prog-bar-track">
+      <div class="prog-bar-fill" id="prog-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Week Tabs -->
+  <div class="week-tabs" id="week-tabs"></div>
+
+  <!-- Habit Grid -->
+  <div id="habit-grid"></div>
+
+  <!-- Chart -->
+  <div class="section-title">نمودار پیشرفت روزانه</div>
+  <div class="chart-wrap">
+    <div class="chart-title">تعداد عادت‌های انجام‌شده در هر روز</div>
+    <div class="chart-bars" id="chart-bars"></div>
+  </div>
+
+  <!-- Social Media Rules -->
+  <div class="section-title">قوانین سوشال مدیا</div>
+  <div class="rules-block">
+    <h3>📱 قوانین استفاده از شبکه‌های اجتماعی</h3>
+    <div class="rules-grid">
+      <div class="rule-card">
+        <h4 style="color:#7c6fff">📨 تلگرام</h4>
+        <div class="rule-item">۱ ساعت اصلی + حداکثر ۱ ساعت اضافه</div>
+        <div class="rule-item">فقط بعد از انجام ۲ عادت از ۴ عادت روزانه</div>
+        <div class="rule-item">گروه‌های بی‌فایده را میوت کن</div>
+        <div class="rule-item">شب بعد از ساعت ۱۱ تلگرام ممنوع</div>
+      </div>
+      <div class="rule-card">
+        <h4 style="color:#ff6b9d">📸 اینستاگرام</h4>
+        <div class="rule-item">۱ ساعت — بدون تمدید</div>
+        <div class="rule-item">فقط بعد از ساعت ۵ عصر</div>
+        <div class="rule-item">سیو مطالب مفید آره، اسکرول بی‌هدف نه</div>
+        <div class="rule-item">اسکرول در رختخواب ممنوع</div>
+      </div>
+      <div class="rule-card">
+        <h4 style="color:#00d4aa">🌅 قوانین صبح</h4>
+        <div class="rule-item">اول ۳۰ دقیقه بدون گوشی بعد از بیداری</div>
+        <div class="rule-item">صبحونه با مادر بدون گوشی</div>
+        <div class="rule-item">اول یک عادت، بعد گوشی</div>
+      </div>
+      <div class="rule-card">
+        <h4 style="color:#ffd166">🌙 قوانین شب</h4>
+        <div class="rule-item">ساعت ۱۱ شب گوشی کنار گذاشته میشه</div>
+        <div class="rule-item">آخرین ۳۰ دقیقه — کتاب نه گوشی</div>
+        <div class="rule-item">یوتیوب شب فقط برای سرگرمی — نه آموزش</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<button class="save-btn" onclick="saveData()">💾 ذخیره پیشرفت</button>
+<div class="toast" id="toast">✅ ذخیره شد!</div>
+
+<script>
+// ── Config ──────────────────────────────────────────────────────────────────
+const WEEKS = [
+  { label: "هفته ۱", date: "۱۱–۱۷ می",  days: 7 },
+  { label: "هفته ۲", date: "۱۸–۲۴ می",  days: 7 },
+  { label: "هفته ۳", date: "۲۵–۳۱ می",  days: 7 },
+  { label: "هفته ۴", date: "۱–۷ جون",   days: 7 },
+];
+
+const DAY_NAMES = ["شن","یک","دو","سه","چه","پن","جم"];
+
+const HABITS = [
+  { name: "💻 ترید / پورصمدی",  activeWeeks: [0,1,2,3] },
+  { name: "📖 کتاب",             activeWeeks: [0,1,2,3] },
+  { name: "🎙 پادکست",           activeWeeks: [0,1,2,3] },
+  { name: "🌱 توسعه فردی",       activeWeeks: [0,1,2,3] },
+];
+
+// Start date: May 11, 2026 (Monday)
+const START_DATE = new Date(2026, 4, 11); // month is 0-indexed
+const TODAY = new Date(2026, 4, 10); // May 10, 2026
+
+function dayIndex(wi, di) {
+  const d = new Date(START_DATE);
+  d.setDate(d.getDate() + wi * 7 + di);
+  return d;
+}
+
+function isToday(wi, di) {
+  const d = dayIndex(wi, di);
+  return d.toDateString() === TODAY.toDateString();
+}
+
+function isFuture(wi, di) {
+  const d = dayIndex(wi, di);
+  return d > TODAY;
+}
+
+// ── State ──────────────────────────────────────────────────────────────────
+let state = loadState();
+let activeWeek = 0;
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('reza_planner_v2');
+    if (s) return JSON.parse(s);
+  } catch(e) {}
+  return WEEKS.map(() => HABITS.map(() => Array(7).fill(false)));
+}
+
+function autoSave() {
+  localStorage.setItem('reza_planner_v2', JSON.stringify(state));
+}
+
+function saveData() {
+  autoSave();
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ── Render Week Tabs ──────────────────────────────────────────────────────
+function renderTabs() {
+  const el = document.getElementById('week-tabs');
+  el.innerHTML = WEEKS.map((w, i) => `
+    <button class="week-tab${i === activeWeek ? ' active' : ''}" onclick="switchWeek(${i})">
+      ${w.label} <span style="opacity:0.6;font-size:0.85em">${w.date}</span>
+    </button>
+  `).join('');
+}
+
+function switchWeek(i) {
+  activeWeek = i;
+  renderTabs();
+  renderGrid();
+}
+
+// ── Render Habit Grid ─────────────────────────────────────────────────────
+function renderGrid() {
+  const wi = activeWeek;
+  const week = WEEKS[wi];
+  const el = document.getElementById('habit-grid');
+
+  // Week total
+  let weekDone = 0, weekMax = 0;
+  HABITS.forEach((h, hi) => {
+    if (h.activeWeeks.includes(wi)) {
+      state[wi][hi].forEach(v => { if(v) weekDone++; });
+      weekMax += 7;
+    }
+  });
+  const weekPct = weekMax > 0 ? Math.round(weekDone / weekMax * 100) : 0;
+
+  let html = `<div class="habit-block">`;
+
+  // Header row
+  html += `
+    <div class="habit-block-header">
+      <div class="habit-block-title">عادت</div>
+      <div class="days-labels" style="grid-template-columns:repeat(7,1fr)">
+        ${DAY_NAMES.map(d => `<div class="day-label">${d}</div>`).join('')}
+      </div>
+      <div class="habit-block-pct">${weekPct}%</div>
+    </div>
+  `;
+
+  // Habit rows
+  HABITS.forEach((habit, hi) => {
+    const active = habit.activeWeeks.includes(wi);
+    const done = state[wi][hi].filter(Boolean).length;
+    const pct = active ? Math.round(done / 7 * 100) : 0;
+    const pctColor = pct >= 80 ? 'var(--done-color)' : pct >= 50 ? 'var(--gold)' : 'var(--text-dim)';
+
+    html += `<div class="habit-row">`;
+    html += `<div class="habit-label">${habit.name}</div>`;
+    html += `<div class="days-grid" style="grid-template-columns:repeat(7,1fr)">`;
+
+    for (let di = 0; di < 7; di++) {
+      const done = active && state[wi][hi][di];
+      const future = active && isFuture(wi, di);
+      const today = active && isToday(wi, di);
+      let cls = 'day-cell';
+      if (done) cls += ' done';
+      if (today && !done) cls += ' today';
+      if (future) cls += ' future';
+      const onclick = active && !future ? `onclick="toggle(${wi},${hi},${di})"` : '';
+      html += `<div class="${cls}" ${onclick}>${done ? '✓' : ''}</div>`;
+    }
+
+    html += `</div>`;
+    html += `<div class="habit-pct" style="color:${pctColor}">${active ? pct + '%' : '—'}</div>`;
+    html += `</div>`;
+  });
+
+  // Summary row
+  html += `<div class="summary-row">`;
+  html += `<div class="summary-label">📊 روزانه</div>`;
+  html += `<div class="days-grid" style="grid-template-columns:repeat(7,1fr)">`;
+  const activeHabits = HABITS.filter(h => h.activeWeeks.includes(wi));
+  for (let di = 0; di < 7; di++) {
+    let count = 0;
+    HABITS.forEach((h, hi) => {
+      if (h.activeWeeks.includes(wi) && state[wi][hi][di]) count++;
+    });
+    const full = count === activeHabits.length && activeHabits.length > 0;
+    html += `<div class="summary-cell${full ? ' full' : ''}">${count}/${activeHabits.length}</div>`;
+  }
+  html += `</div>`;
+  html += `<div class="summary-pct">${weekPct}%</div>`;
+  html += `</div>`;
+
+  html += `</div>`;
+  el.innerHTML = html;
+}
+
+// ── Toggle ────────────────────────────────────────────────────────────────
+function toggle(wi, hi, di) {
+  state[wi][hi][di] = !state[wi][hi][di];
+  autoSave();
+  renderGrid();
+  renderStats();
+  renderChart();
+}
+
+// ── Render Stats ──────────────────────────────────────────────────────────
+function renderStats() {
+  let totalDone = 0, totalMax = 0;
+  WEEKS.forEach((w, wi) => {
+    HABITS.forEach((h, hi) => {
+      if (h.activeWeeks.includes(wi)) {
+        state[wi][hi].forEach(v => { if(v) totalDone++; });
+        totalMax += 7;
+      }
+    });
+  });
+
+  const pct = totalMax > 0 ? Math.round(totalDone / totalMax * 100) : 0;
+
+  // Streak: count consecutive days from today backward
+  let streak = 0;
+  outer: for (let wi = WEEKS.length - 1; wi >= 0; wi--) {
+    for (let di = 6; di >= 0; di--) {
+      const d = dayIndex(wi, di);
+      if (d >= TODAY) continue;
+      const activeHabits = HABITS.filter(h => h.activeWeeks.includes(wi));
+      if (activeHabits.length === 0) continue;
+      const allDone = activeHabits.every((h, i) => {
+        const hi = HABITS.indexOf(h);
+        return state[wi][hi][di];
+      });
+      if (allDone) streak++;
+      else break outer;
+    }
+  }
+
+  document.getElementById('stat-done').textContent = totalDone;
+  document.getElementById('stat-pct').textContent = pct + '%';
+  document.getElementById('stat-streak').textContent = streak;
+  document.getElementById('stat-week').textContent = `هفته ${activeWeek + 1}`;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-text').textContent = `${totalDone} / ${totalMax}`;
+}
+
+// ── Render Chart ──────────────────────────────────────────────────────────
+function renderChart() {
+  const el = document.getElementById('chart-bars');
+  const maxHabits = HABITS.length;
+  let bars = [];
+
+  WEEKS.forEach((w, wi) => {
+    for (let di = 0; di < 7; di++) {
+      const d = dayIndex(wi, di);
+      if (d > TODAY) { bars.push({ count: 0, label: '', future: true }); continue; }
+      let count = 0;
+      HABITS.forEach((h, hi) => {
+        if (h.activeWeeks.includes(wi) && state[wi][hi][di]) count++;
+      });
+      bars.push({ count, label: DAY_NAMES[di], future: false });
+    }
+  });
+
+  el.innerHTML = bars.map(b => {
+    const h = b.future ? 2 : Math.round((b.count / maxHabits) * 100);
+    const opacity = b.future ? 0.2 : 1;
+    return `
+      <div class="chart-bar-wrap">
+        <div class="chart-bar" style="height:${h}%;opacity:${opacity}" data-val="${b.count}/${maxHabits}"></div>
+        <div class="chart-bar-label">${b.label}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────
+renderTabs();
+renderGrid();
+renderStats();
+renderChart();
+</script>
+</body>
+</html>
